@@ -51,7 +51,7 @@ export default function ResultsPage() {
   }
 
   try {
-    const endpoint = `${import.meta.env.VITE_API_BASE_URL}:5000/batch_download`;
+    const endpoint = `${import.meta.env.VITE_API_BASE_URL}/batch_download`;
     const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -121,7 +121,7 @@ export default function ResultsPage() {
 
   const fetchFilterOptions = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}:5000/filters`);
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/filters`);
       setFilterOptions(res.data);
     } catch (err) {
       console.error("Failed to fetch filter options:", err);
@@ -132,7 +132,7 @@ export default function ResultsPage() {
     try {
       setLoading(true);
       setError("");
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}:5000/search`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/search`, {
         params: {
           q: query,
           limit,

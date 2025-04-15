@@ -35,7 +35,7 @@ export default function NearbyPage() {
 
   const fetchFilterOptions = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/filters");
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/filters`);
       setFilterOptions({ age_groups: res.data.age_groups });
     } catch (err) {
       console.error("Failed to fetch filter options:", err);
@@ -82,7 +82,7 @@ export default function NearbyPage() {
         params.country = manualLocation.country;
       }
 
-      const res = await axios.get("http://localhost:5000/nearby", { params });
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/nearby`, { params });
       setResults(res.data.results || []);
       setTotal(res.data.total || 0);
     } catch (err) {

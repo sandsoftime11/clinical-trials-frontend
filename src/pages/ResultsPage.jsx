@@ -24,7 +24,7 @@ export default function ResultsPage() {
   const [showFormatMenu, setShowFormatMenu] = useState(false);
   
   const handleDownload = async (nctId, type) => {
-  const endpoint = `http://localhost:5000/downloads/${nctId}.${type}`;
+  const endpoint = `${import.meta.env.VITE_API_BASE_URL}/downloads/${nctId}.${type}`;
   try {
     const res = await fetch(endpoint);
     if (!res.ok) throw new Error("Failed to download");
@@ -51,7 +51,7 @@ export default function ResultsPage() {
   }
 
   try {
-    const endpoint = `http://localhost:5000/batch_download`;
+    const endpoint = `${import.meta.env.VITE_API_BASE_URL}:5000/batch_download`;
     const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -121,7 +121,7 @@ export default function ResultsPage() {
 
   const fetchFilterOptions = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/filters");
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}:5000/filters`);
       setFilterOptions(res.data);
     } catch (err) {
       console.error("Failed to fetch filter options:", err);
@@ -132,7 +132,7 @@ export default function ResultsPage() {
     try {
       setLoading(true);
       setError("");
-      const res = await axios.get("http://localhost:5000/search", {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}:5000/search`, {
         params: {
           q: query,
           limit,

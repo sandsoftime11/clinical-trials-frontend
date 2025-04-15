@@ -22,6 +22,9 @@ export default function ResultsPage() {
   const [batchFormat, setBatchFormat] = useState("docx");
   const [batchMode, setBatchMode] = useState(false);          
   const [showFormatMenu, setShowFormatMenu] = useState(false);
+  useEffect(() => {
+  console.log("Using API base URL:", import.meta.env.VITE_API_BASE_URL);
+}, []);
   
   const handleDownload = async (nctId, type) => {
   const endpoint = `${import.meta.env.VITE_API_BASE_URL}/downloads/${nctId}.${type}`;

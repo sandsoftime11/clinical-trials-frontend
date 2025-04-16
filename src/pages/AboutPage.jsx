@@ -93,7 +93,7 @@ export default function AboutPage() {
         }}
       >
         <p>
-          Last updated: <strong>April 12, 2025</strong> — based on the most recent data from ClinicalTrials.gov.
+          Last updated: <strong>April 16, 2025</strong> — based on the most recent data from ClinicalTrials.gov.
         </p>
       </section>
     </div>

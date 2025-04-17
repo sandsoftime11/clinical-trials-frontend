@@ -29,7 +29,10 @@ export default function ResultsPage() {
   const handleDownload = async (nctId, type) => {
   const endpoint = `${import.meta.env.VITE_API_BASE_URL}/downloads/${nctId}.${type}`;
   try {
-    const res = await fetch(endpoint);
+    const res = await fetch(endpoint, {
+      method: "GET",
+      mode: "cors",
+    });
     if (!res.ok) throw new Error("Failed to download");
 
     const blob = await res.blob();
@@ -44,8 +47,8 @@ export default function ResultsPage() {
   } catch (err) {
     alert(`Failed to download ${type.toUpperCase()} for ${nctId}`);
     console.error(err);
-   }
- };
+  }
+};
  
   const handleBatchDownload = async (fileType) => {
   if (selectedTrials.length === 0) {

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
 export default function NearbyPage() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [filterOptions, setFilterOptions] = useState({ age_groups: [] });
   const [locationAllowed, setLocationAllowed] = useState(false);
   const [locationDenied, setLocationDenied] = useState(false);
@@ -82,7 +83,10 @@ export default function NearbyPage() {
         params.country = manualLocation.country;
       }
 
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/nearby`, { params });
+      if (searchQuery.trim()) {
+	  params.q = searchQuery.trim();
+	}
+	const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/nearby`, { params });
       setResults(res.data.results || []);
       setTotal(res.data.total || 0);
     } catch (err) {
@@ -235,6 +239,36 @@ export default function NearbyPage() {
           </div>
 
           <div className="results-main">
+	    <div style={{ marginBottom: "1rem" }}>
+		  <input
+		    type="text"
+		    placeholder="Search by condition, drug, etc..."
+		    value={searchQuery}
+		    onChange={(e) => setSearchQuery(e.target.value)}
+		    onKeyDown={(e) => {
+		      if (e.key === "Enter") fetchNearbyTrials();
+		    }}
+		    style={{
+		      padding: "8px",
+		      borderRadius: "6px",
+		      border: "1px solid #ccc",
+		      width: "300px",
+		      marginRight: "10px"
+		    }}
+		  />
+		  <button
+		    onClick={fetchNearbyTrials}
+		    style={{
+		      padding: "8px 14px",
+		      backgroundColor: "#0077cc",
+		      color: "#fff",
+		      border: "none",
+		      borderRadius: "6px"
+		    }}
+		  >
+		    Search Nearby
+		  </button>
+		</div>
             {loading ? (
               <p>Loading...</p>
             ) : error ? (

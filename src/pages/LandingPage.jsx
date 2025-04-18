@@ -50,7 +50,7 @@ export default function LandingPage() {
           </div>
 
           <p className="landing-disclaimer">
-            Disclaimer: This site uses publicly available data from ClinicalTrials.gov. We are not affiliated with or endorsed by ClinicalTrials.gov or the U.S. National Institutes of Health. Data was last processed on <strong>04/16/2025</strong>.
+            Disclaimer: This site uses publicly available data from ClinicalTrials.gov. We are not affiliated with or endorsed by ClinicalTrials.gov or the U.S. National Institutes of Health. Data was last processed on <strong>04/18/2025</strong>.
           </p>
         </div>
 

@@ -1,2 +1,4 @@
-/sitemap.xml  https://api.searchclinicaltrial.com/sitemap.xml  200
-/*            /index.html                                      200
+/sitemap.xml  https://api.searchclinicaltrial.com/sitemap.xml  200!
+  Content-Type: application/xml
+
+/*            /index.html  200

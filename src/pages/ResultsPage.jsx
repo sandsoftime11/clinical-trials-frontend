@@ -12,6 +12,11 @@ export default function ResultsPage() {
 
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [query, setQuery] = useState(initialQuery);
+  useEffect(() => {
+	  document.title = query
+	    ? `Search results for "${query}" - Clinical Trials`
+	    : "Search Clinical Trials Results";
+	}, [query]);
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);

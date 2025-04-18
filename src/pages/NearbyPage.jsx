@@ -7,6 +7,9 @@ import Footer from "../components/Footer";
 
 export default function NearbyPage() {
   const [searchQuery, setSearchQuery] = useState("");
+	  useEffect(() => {
+    document.title = "Nearby Clinical Trials - Search by Location or Condition";
+  }, []);
   const [filterOptions, setFilterOptions] = useState({ age_groups: [] });
   const [locationAllowed, setLocationAllowed] = useState(false);
   const [locationDenied, setLocationDenied] = useState(false);

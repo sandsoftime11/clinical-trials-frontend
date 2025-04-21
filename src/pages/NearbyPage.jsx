@@ -164,6 +164,7 @@ export default function NearbyPage() {
             <a href="/results" className="back-link">← Back to Results</a>
           </div>
           <h2 style={{ textAlign: "center" }}>Find Nearby Clinical Trials</h2>
+	  <div className="mobile-top-ad"></div>
         </div>
 
         <div className="results-container">
@@ -283,19 +284,22 @@ export default function NearbyPage() {
                 <p>Showing {results.length} of {total} results near you.</p>
                 <div className="results-list">
                   {results.map((r, i) => (
-                    <div className="result-card" key={i}>
-                      <h3>
-                        {r.nct_id} — <a href={`https://clinicaltrials.gov/study/${r.nct_id}`} target="_blank" rel="noreferrer">{r.title || "Untitled Study"}</a>
-                      </h3>
-                      <p>{r.summary?.slice(0, 250)}...</p>
-                      <p className="meta">
-                        Facility: {r.facility || "N/A"} <br />
-                        Location: {r.city || ""}, {r.state || ""}, {r.country || ""} <br />
-                        Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"} <br />
-                        Start Date: {r.start_date || "N/A"}
-                      </p>
-                    </div>
-                  ))}
+			  <>
+			    <div className="result-card" key={i}>
+			      <h3>
+			        {r.nct_id} — <a href={`https://clinicaltrials.gov/study/${r.nct_id}`} target="_blank" rel="noreferrer">{r.title || "Untitled Study"}</a>
+			      </h3>
+			      <p>{r.summary?.slice(0, 250)}...</p>
+			      <p className="meta">
+			        Facility: {r.facility || "N/A"} <br />
+			        Location: {r.city || ""}, {r.state || ""}, {r.country || ""} <br />
+			        Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"} <br />
+			        Start Date: {r.start_date || "N/A"}
+			      </p>
+			    </div>
+			    {i === 2 && <div className="mobile-inline-ad"></div>}
+			  </>
+			))}
                 </div>
                 {renderPagination()}
 				<div style={{ textAlign: "center", marginTop: "1rem" }}>

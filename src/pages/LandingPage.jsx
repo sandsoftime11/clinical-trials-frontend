@@ -29,6 +29,7 @@ export default function LandingPage() {
 
         <div className="center-content">
           <div className="landing-box">
+    	    <div className="mobile-top-ad"></div>
             <h1 className="landing-title">Search Clinical Trial Reports</h1>
             <p className="landing-subtitle">
               Discoverable and downloadable by location or keyword.

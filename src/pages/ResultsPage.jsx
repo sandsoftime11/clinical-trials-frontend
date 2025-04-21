@@ -529,6 +529,7 @@ export default function ResultsPage() {
 			</div>
 		  )}
 		</div>
+		<div className="mobile-top-ad"></div>	
             <h2>Search results for “{query}”</h2>
 
             {loading ? (
@@ -567,59 +568,62 @@ export default function ResultsPage() {
 					  )}
 
 					  {results.map((r, i) => (
-						<div className="result-card" key={i}>
-						  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-							{batchMode && (
-							  <input
-								type="checkbox"
-								checked={selectedTrials.includes(r.nct_id)}
-								onChange={() => handleTrialSelect(r.nct_id)}
-							  />
-							)}
-							<h3 style={{ margin: 0 }}>
-							  {r.nct_id} —{" "}
-							  <a
-								href={`https://clinicaltrials.gov/study/${r.nct_id}`}
-								target="_blank"
-								rel="noreferrer"
-							  >
-								{r.title || "Untitled Study"}
-							  </a>
-							</h3>
-						  </div>
-						  <p>{r.summary?.slice(0, 300)}...</p>
-						  <p className="meta">
-							Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"}
-							{r.age_group ? ` | Age Group: ${r.age_group}` : ""}
-							{r.interventions?.length
-							  ? ` | Intervention: ${r.interventions.slice(0, 2).join(", ")}`
-							  : ""}
-							| Start: {r.start_date || "N/A"} | Completed: {r.completion_date || "N/A"}
-						  </p>
-						  <div className="download-links">
-							<a
-							  href="#"
-							  title="Download DOCX"
-							  onClick={(e) => {
-								e.preventDefault();
-								handleDownload(r.nct_id, "docx");
-							  }}
-							>
-							  <img src="/icons/docx.png" alt="DOCX" className="download-icon" />
-							</a>
-							<a
-							  href="#"
-							  title="Download PDF"
-							  onClick={(e) => {
-								e.preventDefault();
-								handleDownload(r.nct_id, "pdf");
-							  }}
-							>
-							  <img src="/icons/pdf.png" alt="PDF" className="download-icon" />
-							</a>
-						  </div>
-						</div>
-					  ))}
+						  <>
+						    <div className="result-card" key={i}>
+						      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+						        {batchMode && (
+						          <input
+						            type="checkbox"
+						            checked={selectedTrials.includes(r.nct_id)}
+						            onChange={() => handleTrialSelect(r.nct_id)}
+						          />
+						        )}
+						        <h3 style={{ margin: 0 }}>
+						          {r.nct_id} —{" "}
+						          <a
+						            href={`https://clinicaltrials.gov/study/${r.nct_id}`}
+						            target="_blank"
+						            rel="noreferrer"
+						          >
+						            {r.title || "Untitled Study"}
+						          </a>
+						        </h3>
+						      </div>
+						      <p>{r.summary?.slice(0, 300)}...</p>
+						      <p className="meta">
+						        Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"}
+						        {r.age_group ? ` | Age Group: ${r.age_group}` : ""}
+						        {r.interventions?.length
+						          ? ` | Intervention: ${r.interventions.slice(0, 2).join(", ")}`
+						          : ""}
+						        | Start: {r.start_date || "N/A"} | Completed: {r.completion_date || "N/A"}
+						      </p>
+						      <div className="download-links">
+						        <a
+						          href="#"
+						          title="Download DOCX"
+						          onClick={(e) => {
+						            e.preventDefault();
+						            handleDownload(r.nct_id, "docx");
+						          }}
+						        >
+						          <img src="/icons/docx.png" alt="DOCX" className="download-icon" />
+						        </a>
+						        <a
+						          href="#"
+						          title="Download PDF"
+						          onClick={(e) => {
+						            e.preventDefault();
+						            handleDownload(r.nct_id, "pdf");
+						          }}
+						        >
+						          <img src="/icons/pdf.png" alt="PDF" className="download-icon" />
+						        </a>
+						      </div>
+						    </div>
+						    {i === 2 && <div className="mobile-inline-ad"></div>}
+						  </>
+						))}
 					</>
 				  )}
 				</div>

@@ -204,18 +204,101 @@
 }
 
 @media (max-width: 768px) {
-  .mobile-top-ad {
+  .top-search-bar {
+    order: 1;
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.4rem;
     width: 100%;
-    height: 60px;
-    background-color: #e6ecf5;
-    margin-bottom: 1rem;
-    border-radius: 8px;
+    max-width: 100%;
+    margin: 0 auto -6rem auto;
   }
 
-  .mobile-inline-ad {
-    background-color: #fff8e1;
-    height: 80px;
-    margin: 1rem 0;
-    border-radius: 8px;
+  .top-search-bar input,
+  .top-search-bar button {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .mobile-filter-toggle {
+    order: 2;
+    margin: 0 auto 0.5rem auto;
+    text-align: center;
+  }
+
+  .nearby-page-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.6rem 1rem 0 1rem;
+  }
+
+  .nearby-container {
+    order: 3;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: 0.8rem;
+  }
+
+  .nearby-sidebar,
+  .nearby-main {
+    width: 100%;
+  }
+
+  .nearby-sidebar {
+    margin-bottom: 0.6rem;
+    padding: 0.7rem;
+    box-shadow: none;
+  }
+
+  .nearby-sidebar button {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .nearby-main {
+    font-size: 1rem;
+  }
+
+  .nearby-main h2 {
+    margin: 0.4rem 0 0.2rem 0;
+    font-size: 1.05rem;
+  }
+
+  .nearby-main p {
+    margin: 0.3rem 0;
+  }
+
+  .result-card {
+    padding: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .pagination {
+    margin: 0.6rem 0;
+    gap: 5px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 0.5rem;
+  }
+
+  .filter-buttons button {
+    width: 100%;
+  }
+
+  .error {
+    margin-top: 0.5rem;
+    color: #cc0000;
+    font-weight: bold;
+    text-align: center;
   }
 }

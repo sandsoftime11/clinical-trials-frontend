@@ -79,7 +79,9 @@ body {
   width: 100%;
   padding: 12px 16px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  background-color: #f0f4f9;
+  color: #333;
+  border: 1px solid #bfd3ea;
   border-radius: 8px;
   margin-bottom: 16px;
   box-sizing: border-box;
@@ -112,6 +114,25 @@ body {
   padding-top: 10px;
 }
 
+body {
+  overflow-x: hidden;
+}
+
+.landing-container {
+  overflow-x: hidden;
+}
+
+.search-btn,
+select,
+input {
+  background-color: #fff !important;
+  color: #000 !important;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
 @media (max-width: 768px) {
   .mobile-top-ad {
     width: 100%;
@@ -120,4 +141,41 @@ body {
     margin-bottom: 1.5rem;
     border-radius: 8px;
   }
+
+  .main-content-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+
+  .left-ad,
+  .right-ad {
+    display: none;
+  }
+
+  .landing-box {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .landing-buttons {
+    width: 100%;
+  }
+
+  .search-btn {
+    width: 100%;
+  }
+}
+
+input.landing-input {
+  background-color: #f0f4f9 !important;
+  color: #333 !important;
+  border: 1px solid #bfd3ea !important;
+}
+
+button.search-btn {
+  background-color: #0066cc !important;
+  color: #fff !important;
+  border: none !important;
 }

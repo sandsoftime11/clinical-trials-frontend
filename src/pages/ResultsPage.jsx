@@ -12,11 +12,6 @@ export default function ResultsPage() {
 
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [query, setQuery] = useState(initialQuery);
-  useEffect(() => {
-	  document.title = query
-	    ? `Search results for "${query}" - Clinical Trials`
-	    : "Search Clinical Trials Results";
-	}, [query]);
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -25,7 +20,9 @@ export default function ResultsPage() {
   const [sortBy, setSortBy] = useState("relevance");
   const [selectedTrials, setSelectedTrials] = useState([]);
   const [batchFormat, setBatchFormat] = useState("docx");
-  const [batchMode, setBatchMode] = useState(false);          
+  const [batchMode, setBatchMode] = useState(false);
+  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+  const isMobile = window.innerWidth <= 768;  
   const [showFormatMenu, setShowFormatMenu] = useState(false);
   useEffect(() => {
   console.log("Using API base URL:", import.meta.env.VITE_API_BASE_URL);
@@ -226,18 +223,19 @@ export default function ResultsPage() {
 };
 
   const renderPagination = () => {
-    if (totalPages <= 1) return null;
+  if (totalPages <= 1) return null;
 
-    const pageNumbers = [];
-    const maxVisible = 5;
-    const start = Math.max(1, page - 2);
-    const end = Math.min(totalPages, start + maxVisible - 1);
+  const pageNumbers = [];
+  const maxVisible = 5;
+  const start = Math.max(1, page - 2);
+  const end = Math.min(totalPages, start + maxVisible - 1);
 
-    for (let i = start; i <= end; i++) {
-      pageNumbers.push(i);
-    }
+  for (let i = start; i <= end; i++) {
+    pageNumbers.push(i);
+  }
 
-    return (
+  return (
+    <>
       <div className="pagination">
         <button disabled={page === 1} onClick={() => handlePageChange(page - 1)}>
           &laquo; Previous
@@ -256,43 +254,45 @@ export default function ResultsPage() {
           Next &raquo;
         </button>
       </div>
-    );
-  };
+      <div style={{ textAlign: "center", marginTop: "0.5rem", fontSize: "0.9rem", color: "#666" }}>
+        Page {page} of {totalPages}
+      </div>
+    </>
+  );
+};
   
-  <div style={{ textAlign: "center", marginTop: "0.5rem", fontSize: "0.9rem", color: "#666" }}>
-  Page {page} of {totalPages}
-</div>
-
   return (
     <div className="page-wrapper">
       <div className="results-page-content">
 
         {/* 🔗 Home Link + Title */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingBottom: "-5rem",
-            borderBottom: "1px solid #ccc",
-            marginBottom: "-5.5rem",
-          }}
-        >
-          <a
-            href="/"
-            style={{
-              color: "#0077cc",
-              textDecoration: "none",
-              fontWeight: "bold",
-              fontSize: "1rem",
-            }}
-          >
-            ← Home
-          </a>
-          <span style={{ fontWeight: "bold", color: "#333", fontSize: "1.1rem" }}>
-            Search Results
-          </span>
-        </div>
+		<div className="results-header-bar">
+		  <div
+			style={{
+			  display: "flex",
+			  justifyContent: "space-between",
+			  alignItems: "center",
+			  paddingBottom: "-5rem",
+			  borderBottom: "1px solid #ccc",
+			  marginBottom: "-5.5rem",
+			}}
+		  >
+			<a
+			  href="/"
+			  style={{
+				color: "#0077cc",
+				textDecoration: "none",
+				fontWeight: "bold",
+				fontSize: "1rem",
+			  }}
+			>
+			  ← Home
+			</a>
+			<span style={{ fontWeight: "bold", color: "#333", fontSize: "1.1rem" }}>
+			  Search Results
+			</span>
+		  </div>
+		</div>
 
         <div className="top-search-bar">
           <input
@@ -307,7 +307,14 @@ export default function ResultsPage() {
 
         <div className="results-container">
           {/* Sidebar */}
-          <div className="results-sidebar">
+		  {isMobile && (
+          <div className="mobile-filter-toggle">
+			  <button onClick={() => setMobileFiltersVisible(!mobileFiltersVisible)}>
+				{mobileFiltersVisible ? "Hide Filters ▲" : "Show Filters ▼"}
+			  </button>
+			</div>
+		  )}
+		  <div className="results-sidebar">
 			<button
 			  onClick={() => navigate("/nearby")}
 			  style={{
@@ -324,7 +331,7 @@ export default function ResultsPage() {
 			>
 			  📍 Look Nearby
 			</button>
-
+			{(!isMobile || mobileFiltersVisible) && (
             <div className="filters-bar">
               <h4>Filters</h4>
 
@@ -445,6 +452,7 @@ export default function ResultsPage() {
                 <button onClick={handleResetFilters}>Reset</button>
               </div>
             </div>
+		    )}
           </div>
 
           {/* Main Results */}
@@ -529,8 +537,7 @@ export default function ResultsPage() {
 			</div>
 		  )}
 		</div>
-		<div className="mobile-top-ad"></div>	
-            <h2>Search results for “{query}”</h2>
+            <h2 style={{ color: "#003366" }}>Search results for “{query}”</h2>
 
             {loading ? (
               <p>Loading...</p>
@@ -568,62 +575,59 @@ export default function ResultsPage() {
 					  )}
 
 					  {results.map((r, i) => (
-						  <>
-						    <div className="result-card" key={i}>
-						      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-						        {batchMode && (
-						          <input
-						            type="checkbox"
-						            checked={selectedTrials.includes(r.nct_id)}
-						            onChange={() => handleTrialSelect(r.nct_id)}
-						          />
-						        )}
-						        <h3 style={{ margin: 0 }}>
-						          {r.nct_id} —{" "}
-						          <a
-						            href={`https://clinicaltrials.gov/study/${r.nct_id}`}
-						            target="_blank"
-						            rel="noreferrer"
-						          >
-						            {r.title || "Untitled Study"}
-						          </a>
-						        </h3>
-						      </div>
-						      <p>{r.summary?.slice(0, 300)}...</p>
-						      <p className="meta">
-						        Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"}
-						        {r.age_group ? ` | Age Group: ${r.age_group}` : ""}
-						        {r.interventions?.length
-						          ? ` | Intervention: ${r.interventions.slice(0, 2).join(", ")}`
-						          : ""}
-						        | Start: {r.start_date || "N/A"} | Completed: {r.completion_date || "N/A"}
-						      </p>
-						      <div className="download-links">
-						        <a
-						          href="#"
-						          title="Download DOCX"
-						          onClick={(e) => {
-						            e.preventDefault();
-						            handleDownload(r.nct_id, "docx");
-						          }}
-						        >
-						          <img src="/icons/docx.png" alt="DOCX" className="download-icon" />
-						        </a>
-						        <a
-						          href="#"
-						          title="Download PDF"
-						          onClick={(e) => {
-						            e.preventDefault();
-						            handleDownload(r.nct_id, "pdf");
-						          }}
-						        >
-						          <img src="/icons/pdf.png" alt="PDF" className="download-icon" />
-						        </a>
-						      </div>
-						    </div>
-						    {i === 2 && <div className="mobile-inline-ad"></div>}
-						  </>
-						))}
+						<div className="result-card" key={i}>
+						  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+							{batchMode && (
+							  <input
+								type="checkbox"
+								checked={selectedTrials.includes(r.nct_id)}
+								onChange={() => handleTrialSelect(r.nct_id)}
+							  />
+							)}
+							<h3 style={{ margin: 0 }}>
+							  {r.nct_id} —{" "}
+							  <a
+								href={`https://clinicaltrials.gov/study/${r.nct_id}`}
+								target="_blank"
+								rel="noreferrer"
+							  >
+								{r.title || "Untitled Study"}
+							  </a>
+							</h3>
+						  </div>
+						  <p>{r.summary?.slice(0, 300)}...</p>
+						  <p className="meta">
+							Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"}
+							{r.age_group ? ` | Age Group: ${r.age_group}` : ""}
+							{r.interventions?.length
+							  ? ` | Intervention: ${r.interventions.slice(0, 2).join(", ")}`
+							  : ""}
+							| Start: {r.start_date || "N/A"} | Completed: {r.completion_date || "N/A"}
+						  </p>
+						  <div className="download-links">
+							<a
+							  href="#"
+							  title="Download DOCX"
+							  onClick={(e) => {
+								e.preventDefault();
+								handleDownload(r.nct_id, "docx");
+							  }}
+							>
+							  <img src="/icons/docx.png" alt="DOCX" className="download-icon" />
+							</a>
+							<a
+							  href="#"
+							  title="Download PDF"
+							  onClick={(e) => {
+								e.preventDefault();
+								handleDownload(r.nct_id, "pdf");
+							  }}
+							>
+							  <img src="/icons/pdf.png" alt="PDF" className="download-icon" />
+							</a>
+						  </div>
+						</div>
+					  ))}
 					</>
 				  )}
 				</div>

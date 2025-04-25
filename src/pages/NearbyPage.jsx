@@ -6,15 +6,13 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
 export default function NearbyPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-	  useEffect(() => {
-    document.title = "Nearby Clinical Trials - Search by Location or Condition";
-  }, []);
   const [filterOptions, setFilterOptions] = useState({ age_groups: [] });
   const [locationAllowed, setLocationAllowed] = useState(false);
   const [locationDenied, setLocationDenied] = useState(false);
   const [coords, setCoords] = useState({ lat: "", lon: "" });
   const [manualLocation, setManualLocation] = useState({ city: "", state: "", country: "" });
+  const isMobile = window.innerWidth <= 768;
+  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
 
   const [filters, setFilters] = useState({
     facility: "",
@@ -86,10 +84,7 @@ export default function NearbyPage() {
         params.country = manualLocation.country;
       }
 
-      if (searchQuery.trim()) {
-	  params.q = searchQuery.trim();
-	}
-	const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/nearby`, { params });
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/nearby`, { params });
       setResults(res.data.results || []);
       setTotal(res.data.total || 0);
     } catch (err) {
@@ -164,10 +159,17 @@ export default function NearbyPage() {
             <a href="/results" className="back-link">← Back to Results</a>
           </div>
           <h2 style={{ textAlign: "center" }}>Find Nearby Clinical Trials</h2>
-	  <div className="mobile-top-ad"></div>
         </div>
 
         <div className="results-container">
+		{isMobile && (
+		  <div className="mobile-filter-toggle">
+			<button onClick={() => setMobileFiltersVisible(!mobileFiltersVisible)}>
+			  {mobileFiltersVisible ? "Hide Filters ▲" : "Show Filters ▼"}
+			</button>
+		  </div>
+		)}
+		{(!isMobile || mobileFiltersVisible) && (
           <div className="results-sidebar">
             <div className="switch-wrapper">
               <label className="switch">
@@ -241,38 +243,9 @@ export default function NearbyPage() {
               ♻️ Reset
             </button>
           </div>
+		)}
 
           <div className="results-main">
-	    <div style={{ marginBottom: "1rem" }}>
-		  <input
-		    type="text"
-		    placeholder="Search by condition, drug, etc..."
-		    value={searchQuery}
-		    onChange={(e) => setSearchQuery(e.target.value)}
-		    onKeyDown={(e) => {
-		      if (e.key === "Enter") fetchNearbyTrials();
-		    }}
-		    style={{
-		      padding: "8px",
-		      borderRadius: "6px",
-		      border: "1px solid #ccc",
-		      width: "300px",
-		      marginRight: "10px"
-		    }}
-		  />
-		  <button
-		    onClick={fetchNearbyTrials}
-		    style={{
-		      padding: "8px 14px",
-		      backgroundColor: "#0077cc",
-		      color: "#fff",
-		      border: "none",
-		      borderRadius: "6px"
-		    }}
-		  >
-		    Search Nearby
-		  </button>
-		</div>
             {loading ? (
               <p>Loading...</p>
             ) : error ? (
@@ -284,22 +257,19 @@ export default function NearbyPage() {
                 <p>Showing {results.length} of {total} results near you.</p>
                 <div className="results-list">
                   {results.map((r, i) => (
-			  <>
-			    <div className="result-card" key={i}>
-			      <h3>
-			        {r.nct_id} — <a href={`https://clinicaltrials.gov/study/${r.nct_id}`} target="_blank" rel="noreferrer">{r.title || "Untitled Study"}</a>
-			      </h3>
-			      <p>{r.summary?.slice(0, 250)}...</p>
-			      <p className="meta">
-			        Facility: {r.facility || "N/A"} <br />
-			        Location: {r.city || ""}, {r.state || ""}, {r.country || ""} <br />
-			        Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"} <br />
-			        Start Date: {r.start_date || "N/A"}
-			      </p>
-			    </div>
-			    {i === 2 && <div className="mobile-inline-ad"></div>}
-			  </>
-			))}
+                    <div className="result-card" key={i}>
+                      <h3>
+                        {r.nct_id} — <a href={`https://clinicaltrials.gov/study/${r.nct_id}`} target="_blank" rel="noreferrer">{r.title || "Untitled Study"}</a>
+                      </h3>
+                      <p>{r.summary?.slice(0, 250)}...</p>
+                      <p className="meta">
+                        Facility: {r.facility || "N/A"} <br />
+                        Location: {r.city || ""}, {r.state || ""}, {r.country || ""} <br />
+                        Status: {r.status || "N/A"} | Phase: {r.phase || "N/A"} <br />
+                        Start Date: {r.start_date || "N/A"}
+                      </p>
+                    </div>
+                  ))}
                 </div>
                 {renderPagination()}
 				<div style={{ textAlign: "center", marginTop: "1rem" }}>

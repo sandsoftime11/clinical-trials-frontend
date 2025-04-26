@@ -303,3 +303,25 @@ body {
   }
 }
 
+.result-card,
+.result-card p,
+.result-card a,
+.pagination,
+.pagination button,
+.pagination a,
+.page-button {
+  color: #000000;
+}
+
+.result-card a:hover,
+.pagination a:hover {
+  color: #0077cc;
+  text-decoration: underline;
+}
+
+.page-button:hover,
+.pagination button:hover {
+  background-color: #e0e0e0;
+  color: #0077cc;
+  font-weight: bold;
+}

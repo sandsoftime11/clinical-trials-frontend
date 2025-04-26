@@ -13,6 +13,7 @@ export default function NearbyPage() {
   const [manualLocation, setManualLocation] = useState({ city: "", state: "", country: "" });
   const isMobile = window.innerWidth <= 768;
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   const [filters, setFilters] = useState({
     facility: "",
@@ -160,7 +161,22 @@ export default function NearbyPage() {
           </div>
           <h2 style={{ textAlign: "center" }}>Find Nearby Clinical Trials</h2>
         </div>
-
+		<div className="top-search-bar">
+		  <input
+			type="text"
+			placeholder="Search clinical trials..."
+			value={searchInput}
+			onChange={(e) => setSearchInput(e.target.value)}
+			onKeyDown={(e) => {
+			  if (e.key === "Enter") navigate(`/results?q=${encodeURIComponent(searchInput.trim())}`);
+			}}
+		  />
+		  <button
+			onClick={() => navigate(`/results?q=${encodeURIComponent(searchInput.trim())}`)}
+		  >
+			Search
+		  </button>
+		</div>
         <div className="results-container">
 		{isMobile && (
 		  <div className="mobile-filter-toggle">

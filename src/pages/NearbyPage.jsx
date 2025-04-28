@@ -118,6 +118,44 @@ export default function NearbyPage() {
     setPage(1);
   };
 
+  const handleNearbySearch = async () => {
+	  try {
+		setLoading(true);
+		setError("");
+		setPage(1);
+
+		const params = {
+		  limit,
+		  offset: 0,
+		  ...filters
+		};
+
+		if (useMyLocation && locationAllowed) {
+		  params.lat = coords.lat;
+		  params.lon = coords.lon;
+		  params.radius = radius;
+		} else {
+		  params.city = manualLocation.city;
+		  params.state = manualLocation.state;
+		  params.country = manualLocation.country;
+		}
+
+		if (searchInput.trim()) {
+		  params.q = searchInput.trim();
+		}
+
+		const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/nearby`, { params });
+		setResults(res.data.results || []);
+		setTotal(res.data.total || 0);
+	  } catch (err) {
+		console.error("❌ Nearby search error:", err);
+		setError("Failed to fetch nearby trials.");
+	  } finally {
+		setLoading(false);
+	  }
+	};
+
+
   const renderPagination = () => {
     const totalPages = Math.ceil(total / limit);
     if (totalPages <= 1) return null;
@@ -164,15 +202,15 @@ export default function NearbyPage() {
 		<div className="top-search-bar">
 		  <input
 			type="text"
-			placeholder="Search clinical trials..."
+			placeholder="Search nearby clinical trials..."
 			value={searchInput}
 			onChange={(e) => setSearchInput(e.target.value)}
 			onKeyDown={(e) => {
-			  if (e.key === "Enter") navigate(`/results?q=${encodeURIComponent(searchInput.trim())}`);
+			  if (e.key === "Enter") handleNearbySearch();
 			}}
 		  />
 		  <button
-			onClick={() => navigate(`/results?q=${encodeURIComponent(searchInput.trim())}`)}
+			onClick={handleNearbySearch}
 		  >
 			Search
 		  </button>

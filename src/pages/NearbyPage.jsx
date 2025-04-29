@@ -74,12 +74,8 @@ export default function NearbyPage() {
     }
   }, [page, appliedFilters, coords, manualLocation, radius]);
   
-  useEffect(() => {
-	  if (searchInput.trim()) {
-		handleNearbySearch();
-	  } else {
-		fetchNearbyTrials();
-	  }
+   useEffect(() => {
+	  handleNearbySearch();
 	}, [sortBy]);
 
   const fetchNearbyTrials = async () => {
@@ -91,7 +87,7 @@ export default function NearbyPage() {
         limit,
         offset,
 		sort: sortBy,
-        ...appliedFilters
+        ...filters
       };
 
       if (useMyLocation && locationAllowed) {

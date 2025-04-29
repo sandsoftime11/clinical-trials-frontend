@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./NearbyPage.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Footer from "../components/Footer";
 
 export default function NearbyPage() {
@@ -13,7 +13,10 @@ export default function NearbyPage() {
   const [manualLocation, setManualLocation] = useState({ city: "", state: "", country: "" });
   const isMobile = window.innerWidth <= 768;
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialSearchTerm = searchParams.get('q') || "";
+  const [searchInput, setSearchInput] = useState(initialSearchTerm);
 
   const [filters, setFilters] = useState({
     facility: "",
@@ -57,6 +60,12 @@ export default function NearbyPage() {
       }
     );
   }, []);
+  
+  useEffect(() => {
+	  if (initialSearchTerm && (locationAllowed || locationDenied)) {
+		handleNearbySearch();
+	  }
+	}, [locationAllowed, locationDenied]);
 
   useEffect(() => {
     if (locationAllowed || locationDenied) {

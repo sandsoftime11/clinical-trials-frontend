@@ -17,6 +17,7 @@ export default function NearbyPage() {
   const searchParams = new URLSearchParams(location.search);
   const initialSearchTerm = searchParams.get('q') || "";
   const [searchInput, setSearchInput] = useState(initialSearchTerm);
+  const [sortBy, setSortBy] = useState("relevance");
 
   const [filters, setFilters] = useState({
     facility: "",
@@ -68,10 +69,18 @@ export default function NearbyPage() {
 	}, [locationAllowed, locationDenied]);
 
   useEffect(() => {
-    if (locationAllowed || locationDenied) {
+    if ((locationAllowed || locationDenied) && !searchInput.trim()) {
       fetchNearbyTrials();
     }
   }, [page, appliedFilters, coords, manualLocation, radius]);
+  
+  useEffect(() => {
+	  if (searchInput.trim()) {
+		handleNearbySearch();
+	  } else {
+		fetchNearbyTrials();
+	  }
+	}, [sortBy]);
 
   const fetchNearbyTrials = async () => {
     try {
@@ -81,6 +90,7 @@ export default function NearbyPage() {
       const params = {
         limit,
         offset,
+		sort: sortBy,
         ...appliedFilters
       };
 
@@ -136,6 +146,7 @@ export default function NearbyPage() {
 		const params = {
 		  limit,
 		  offset: 0,
+		  sort: sortBy,
 		  ...filters
 		};
 
@@ -309,6 +320,34 @@ export default function NearbyPage() {
 		)}
 
           <div className="results-main">
+			  <div
+				  style={{
+					display: "flex",
+					alignItems: "center",
+					gap: "8px",
+					marginBottom: "1rem",
+					background: "#f4f4f4",
+					padding: "10px 14px",
+					borderRadius: "8px",
+					width: "fit-content",
+				  }}
+				>
+				  <label style={{ fontWeight: "bold", color: "#333" }}>Sort by:</label>
+				  <select
+					value={sortBy}
+					onChange={(e) => setSortBy(e.target.value)}
+					style={{
+					  padding: "6px 10px",
+					  borderRadius: "6px",
+					  border: "1px solid #ccc",
+					  fontSize: "0.95rem",
+					}}
+				  >
+					<option value="relevance">Relevance</option>
+					<option value="newest">Newest</option>
+					<option value="oldest">Oldest</option>
+				  </select>
+				</div>
             {loading ? (
               <p>Loading...</p>
             ) : error ? (

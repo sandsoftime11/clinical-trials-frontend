@@ -359,3 +359,13 @@
   color: #0077cc;
   font-weight: bold;
 }
+
+.result-card h3 a {
+  color: #0077cc; /* Trusted medical blue */
+  text-decoration: none; /* Optional: remove underline */
+}
+
+.result-card h3 a:hover {
+  color: #005fa3; /* Slightly darker on hover */
+  text-decoration: underline; /* Optional: underline on hover */
+}

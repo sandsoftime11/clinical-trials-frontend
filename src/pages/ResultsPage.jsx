@@ -316,7 +316,14 @@ export default function ResultsPage() {
 		  )}
 		  <div className="results-sidebar">
 			<button
-			  onClick={() => navigate("/nearby")}
+			  onClick={() => {
+				const query = searchInput.trim();
+				if (query) {
+				  navigate(`/nearby?q=${encodeURIComponent(query)}`);
+				} else {
+				  navigate("/nearby");
+				}
+			  }}
 			  style={{
 				marginBottom: "1rem",
 				padding: "10px 16px",

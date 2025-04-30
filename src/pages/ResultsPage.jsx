@@ -27,6 +27,56 @@ export default function ResultsPage() {
   useEffect(() => {
   console.log("Using API base URL:", import.meta.env.VITE_API_BASE_URL);
 }, []);
+
+	const smartApplyFiltersFromQuery = () => {
+	  const tokens = searchInput.trim().toLowerCase().split(/\s+/);
+	  const newFilters = { ...filters };
+
+	  // Match intervention types by keyword
+	  const interventionMap = {
+		"drug": "Drug",
+		"device": "Device",
+		"procedure": "Procedure",
+		"test": "Diagnostic_Test",
+		"biological": "Biological",
+		"radiation": "Radiation",
+		"dietary": "Dietary_Supplement",
+		"genetic": "Genetic"
+	  };
+
+	  for (const word of tokens) {
+		if (interventionMap[word]) {
+		  newFilters.intervention_type = interventionMap[word];
+		  break;
+		}
+	  }
+
+	  // Match city from dynamic list
+	  const matchingCity = filterOptions.cities?.find(city =>
+		tokens.includes(city.toLowerCase())
+	  );
+	  if (matchingCity) {
+		newFilters.city = matchingCity;
+	  }
+
+	  // ✅ Match state from filterOptions.states
+	  const matchingState = filterOptions.states?.find(state =>
+		tokens.includes(state.toLowerCase())
+	  );
+	  if (matchingState) {
+		newFilters.state = matchingState;
+	  }
+
+	  // ✅ Match country from filterOptions.countries
+	  const matchingCountry = filterOptions.countries?.find(country =>
+		tokens.includes(country.toLowerCase())
+	  );
+	  if (matchingCountry) {
+		newFilters.country = matchingCountry;
+	  }
+
+	  setFilters(newFilters);
+	};
   
   const handleDownload = async (nctId, type) => {
   const endpoint = `${import.meta.env.VITE_API_BASE_URL}/downloads/${nctId}.${type}`;
@@ -166,6 +216,7 @@ export default function ResultsPage() {
   };
 
   const handleSearch = () => {
+	smartApplyFiltersFromQuery();  
     setPage(1);
     setQuery(searchInput.trim());
     navigate(`/results?q=${encodeURIComponent(searchInput.trim())}`);

@@ -216,8 +216,8 @@ body {
     flex-direction: column;
     gap: 0.4rem;
     max-width: 100%;
-	margin-top: 0rem !important;
-    margin-bottom: -6rem !important
+	margin-top: 0rem;
+    margin-bottom: -6rem;
   }
 
   .mobile-filter-toggle {
@@ -334,4 +334,14 @@ body {
 .result-card h3 a:hover {
   color: #005fa3; /* Slightly darker on hover */
   text-decoration: underline; /* Optional: underline on hover */
+}
+
+@media (min-width: 769px) {
+  .results-header-bar {
+    margin-bottom: -4rem !important;
+  }
+
+  .top-search-bar {
+    margin: 0rem 0 -5rem 0 !important;
+  }
 }

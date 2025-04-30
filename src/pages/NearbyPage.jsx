@@ -6,7 +6,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Footer from "../components/Footer";
 
 export default function NearbyPage() {
-  const [filterOptions, setFilterOptions] = useState({ age_groups: [] });
+  const [filterOptions, setFilterOptions] = useState({ age_groups: [],
+													  phases: [],
+													  statuses: [],
+													  study_types: [],
+													  intervention_types: [],
+													  });
   const [locationAllowed, setLocationAllowed] = useState(false);
   const [locationDenied, setLocationDenied] = useState(false);
   const [coords, setCoords] = useState({ lat: "", lon: "" });
@@ -18,14 +23,68 @@ export default function NearbyPage() {
   const initialSearchTerm = searchParams.get('q') || "";
   const [searchInput, setSearchInput] = useState(initialSearchTerm);
   const [sortBy, setSortBy] = useState("relevance");
+  
+	const smartApplyFiltersFromQuery = () => {
+	  const tokens = searchInput.trim().toLowerCase().split(/\s+/);
+	  const newFilters = { ...filters };
+
+	  // Match intervention types by keyword
+	  const interventionMap = {
+		"drug": "Drug",
+		"device": "Device",
+		"procedure": "Procedure",
+		"test": "Diagnostic_Test",
+		"biological": "Biological",
+		"radiation": "Radiation",
+		"dietary": "Dietary_Supplement",
+		"genetic": "Genetic"
+	  };
+
+	  for (const word of tokens) {
+		if (interventionMap[word]) {
+		  newFilters.intervention_type = interventionMap[word];
+		  break;
+		}
+	  }
+
+	  // Match city from dynamic list
+	  const matchingCity = filterOptions.cities?.find(city =>
+		tokens.includes(city.toLowerCase())
+	  );
+	  if (matchingCity) {
+		newFilters.city = matchingCity;
+	  }
+
+	  // ✅ Match state from filterOptions.states
+	  const matchingState = filterOptions.states?.find(state =>
+		tokens.includes(state.toLowerCase())
+	  );
+	  if (matchingState) {
+		newFilters.state = matchingState;
+	  }
+
+	  // ✅ Match country from filterOptions.countries
+	  const matchingCountry = filterOptions.countries?.find(country =>
+		tokens.includes(country.toLowerCase())
+	  );
+	  if (matchingCountry) {
+		newFilters.country = matchingCountry;
+	  }
+
+	  setFilters(newFilters);
+	};
 
   const [filters, setFilters] = useState({
-    facility: "",
-    status: "",
-    age_group: "",
-    sex: "",
-    start_date_from: "",
-    start_date_to: ""
+	  facility: "",
+	  phase: "",
+	  status: "",
+	  study_type: "",
+	  intervention_type: "",
+	  age_group: "",
+	  sex: "",
+	  has_results: false,
+	  start_date_from: "",
+	  start_date_to: "",
   });
   const [appliedFilters, setAppliedFilters] = useState(filters);
 
@@ -43,7 +102,12 @@ export default function NearbyPage() {
   const fetchFilterOptions = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/filters`);
-      setFilterOptions({ age_groups: res.data.age_groups });
+      setFilterOptions({   age_groups: res.data.age_groups,
+						  phases: res.data.phases,
+						  statuses: res.data.statuses,
+						  study_types: res.data.study_types,
+						  intervention_types: res.data.intervention_types,
+						  });
     } catch (err) {
       console.error("Failed to fetch filter options:", err);
     }
@@ -114,6 +178,7 @@ export default function NearbyPage() {
   const applyFilters = () => {
     setAppliedFilters({ ...filters });
     setPage(1);
+	fetchNearbyTrials();
   };
 
   const handleResetFilters = () => {
@@ -134,6 +199,7 @@ export default function NearbyPage() {
   };
 
   const handleNearbySearch = async () => {
+	  smartApplyFiltersFromQuery();
 	  try {
 		setLoading(true);
 		setError("");
@@ -263,6 +329,17 @@ export default function NearbyPage() {
             <label>Facility:</label>
             <input type="text" value={filters.facility} onChange={(e) => setFilters({ ...filters, facility: e.target.value })} />
 
+			<label>Phase:</label>
+			<select
+			  value={filters.phase}
+			  onChange={(e) => setFilters({ ...filters, phase: e.target.value })}
+			>
+			  <option value="">All</option>
+			  {filterOptions.phases?.map((p) => (
+				<option key={p} value={p}>{p}</option>
+			  ))}
+			</select>
+
             <label>Status:</label>
             <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
               <option value="">All</option>
@@ -271,6 +348,28 @@ export default function NearbyPage() {
               <option value="Completed">Completed</option>
               <option value="Other">Other</option>
             </select>
+			
+			<label>Study Type:</label>
+			<select
+			  value={filters.study_type}
+			  onChange={(e) => setFilters({ ...filters, study_type: e.target.value })}
+			>
+			  <option value="">All</option>
+			  {filterOptions.study_types?.map((type) => (
+				<option key={type} value={type}>{type}</option>
+			  ))}
+			</select>
+			
+			<label>Intervention Type:</label>
+			<select
+			  value={filters.intervention_type}
+			  onChange={(e) => setFilters({ ...filters, intervention_type: e.target.value })}
+			>
+			  <option value="">All</option>
+			  {filterOptions.intervention_types?.map((type) => (
+				<option key={type} value={type}>{type}</option>
+			  ))}
+			</select>
 
             <label>Age Group:</label>
             <select value={filters.age_group} onChange={(e) => setFilters({ ...filters, age_group: e.target.value })}>
@@ -288,6 +387,17 @@ export default function NearbyPage() {
               <option value="All">All Genders</option>
               <option value="Other">Other</option>
             </select>
+			
+			<label>Results Available:</label>
+			<select
+			  value={filters.has_results ? "true" : ""}
+			  onChange={(e) =>
+				setFilters({ ...filters, has_results: e.target.value === "true" })
+			  }
+			>
+			  <option value="">No</option>
+			  <option value="true">Yes</option>
+			</select>
 
             <label>Start Date From:</label>
             <input type="date" value={filters.start_date_from} onChange={(e) => setFilters({ ...filters, start_date_from: e.target.value })} />
